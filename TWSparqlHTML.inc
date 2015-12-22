@@ -122,7 +122,7 @@ class TWSparqlHTMLCache implements TWSparqlCache {
    * the query text
    * @param string $results The query text returned by dereferencing $queryUri 
    */
-  public function cacheQuery($queryUri, $results) {
+  public function cacheQueryResult($pageid, $queryUri, $endpoint, $results) {
   }
   
   /**
@@ -153,7 +153,7 @@ class TWSparqlHTMLCache implements TWSparqlCache {
    * @param string $expires An optional duration to wait before expiring the
    * result; defaults to TWSparql::getEngine()->getCacheTTL()
    */
-  public function cacheFinal($queryUri, $xsltUri, $result, $expires=NULL) {
+  public function cacheFinal($pageid, $queryUri, $endpoint, $xsltUri, $result) {
   }
   
   /**
@@ -180,41 +180,26 @@ class TWSparqlHTMLCache implements TWSparqlCache {
    * Clears the cached copy of $queryUri, if any.
    * @param string $queryUri 
    */
-  public function clearQueryCache($queryUri) {
+  public function clearQueryResultCache($pageid, $queryUri, $endpoint) {
   }
-
-  public function clearRDFCache($queryUri) {
-  }
-
-  public function clearXSLTCache($xsltUri) {
-  }
-
-  public function clearFinalCache($queryUri, $xsltUri) {
+  public function clearFinalCache($pageid, $queryUri, $endpoint, $xsltUri) {
   }
   
   /**
    * Gets the cached content for $queryUri, or NULL if no content is available.
    * @param string $queryUri 
    */
-  public function getCachedQuery($queryUri) {
+  public function getCachedQueryResult($pageid, $queryUri, $endpoint, $expires) {
     return NULL ;
   }
-
-  public function getCachedRDF($queryUri) {
-	return NULL ;
-  }
-
-  public function getCachedXSLT($xlstUri) {
-	return NULL ;
-  }
-
-  public function getCachedFinal($queryUri, $xsltUri) {
-	return NULL ;
+  public function getCachedFinal($pageid, $queryUri, $endpoint, $xsltUri, $expires) {
+    return NULL ;
   }
 }
 
 class TWSparqlHTML extends TWSparql {
   private $phpExtensions ;
+  private $siteBase ;
   private $iBase ;
   private $sBase ;
   private $queryPath ;
@@ -233,6 +218,7 @@ class TWSparqlHTML extends TWSparql {
 	{
 	  throw new Exception( "TWSparql configuration file contains errors" ) ;
 	}
+	TWSparql::getEngine()->setSiteBase( $ini_array["siteBase"] ) ;
 	TWSparql::getEngine()->setIbase( $ini_array["iBase"] ) ;
 	TWSparql::getEngine()->setSbase( $ini_array["sBase"] ) ;
 	TWSparql::getEngine()->setXsltPath( $ini_array["xsltPath"] ) ;
@@ -282,6 +268,14 @@ class TWSparqlHTML extends TWSparql {
     $this->phpExtensions = $val ;
   }
   
+  public function setSiteBase($val) {
+    $this->siteBase = $val ;
+  }
+
+  public function getSiteBase() {
+    return $this->siteBase ;
+  }
+
   public function getIbase() {
     return $this->iBase ;
   }
